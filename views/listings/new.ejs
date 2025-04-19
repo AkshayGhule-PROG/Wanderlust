@@ -1,9 +1,9 @@
 <% layout("/layouts/boilerplate") %>
   <div class="row">
     <div class="col-8 offset-2">
-      </br></br>
+      <br><br>
   <h3>Create a New Listing</h3>
-  <form method="POST" action="/listings">
+  <form method="POST" action="/listings"  novalidate class="needs-validation">
     <div class="mb-3">
       <label class="form-label" for="listing-title">Title</label>
       <input
@@ -12,7 +12,11 @@
         name="listing[title]"
         placeholder="enter title"
         type="text"
+        required
       />
+      <div class="valid-feedback">
+        Looks good!
+      </div>
     </div>
     <br />
     <div class="mb-3">
@@ -22,18 +26,17 @@
         class="form-control"
         name="listing[description]"
         placeholder="enter description"
+        required
       ></textarea>
+      <div class="invalid-feedback">
+        Description should be valid
+      </div>
     </div>
     <br />
     <div class="mb-3" >
       <label class="form-label" for="listing-image">Image URL/Link</label>
-      <input
-        id="listing-image"
-        class="form-control"
-        name="listing[image]"
-        placeholder="enter image URL/Link"
-        type="text"
-      />
+      <input id="listing-image" class="form-control" name="listing[image][url]" placeholder="enter image URL/Link" type="text" />
+      
     </div>
     <br />
     <div class="row">
@@ -44,8 +47,13 @@
       class="form-control"
       name="listing[price]"
       placeholder="enter price"
-      type="number"
-      />
+      type="text"
+      required
+    />
+    
+      <div class="invalid-feedback">
+        Price should be valid
+      </div>
     </div>
     <br />
     <div class="mb-3 col-md-8">
@@ -56,7 +64,11 @@
       name="listing[country]"
       placeholder="enter country"
       type="text"
+      required
       />
+      <div class="invalid-feedback">
+        Country should be valid
+      </div>
     </div>
   </div>
     <br />
@@ -68,7 +80,11 @@
         name="listing[location]"
         placeholder="enter location"
         type="text"
+        required
       />
+      <div class="invalid-feedback">
+        Location should be valid
+      </div>
     </div>
     <br />
     <button class="btn btn-dark  add-btn">Add</button>

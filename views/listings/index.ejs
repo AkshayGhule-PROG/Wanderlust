@@ -1,16 +1,17 @@
 <% layout("/layouts/boilerplate") %>
 <body>
+     <%=success%>
+    
     <div class="row row-cols-lg-3 row-cols-md-2  row-cols-sm-1">
     <%for(let listing of allListings){  %>
       <a href="/listings/<%= listing._id %>" class="listing-link">
-    <div class="card  m-1 p-1" >
+    <div class="card  m-1 p-1 listing-card" >
         <img class="card-img-top" src="<%=listing.image.url%>" alt="Card image cap"  style="height: 20rem";>
         <div class="card-img-overlay">abcd</div>
         <div class="card-body">
           <p class="card-text">
-             <b><%=listing.title%></b>
-             </br>
-             &#8377; <%= listing.price.toLocaleString("en-IN") %> /night
+             <b><%= listing.title %></b><br>
+             &#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") : "Price not available" %> /night
             </p>
         </div>
       </div>
