@@ -15,6 +15,10 @@ const rewiewSchema = new Schema({
     listing: {
         type: Schema.Types.ObjectId,
         ref: 'Listing' // ✅ Capitalized and matches the model name
+    },
+    author:{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
     
     

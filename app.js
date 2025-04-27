@@ -1,3 +1,4 @@
+require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -6,10 +7,14 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const ExpressError = require('./utils/ExpresseError.js');
 const session= require('express-session')
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash")
 const passport = require("passport")
 const LocalStrategy = require("passport-local").Strategy
 const User = require("./models/users.js")
+const multer  = require('multer')
+const { cloudinary, storage } = require('./cloudConfig.js'); // Import cloudinary and storage configuration
+const upload = multer({storage})
 
 
 
@@ -20,11 +25,12 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 // Mongoose Connection
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl= process.env.ATLASTDB_URL;
 main().then(() => console.log("Connected to DB")).catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }
 
 // View Engine & Middleware
@@ -37,8 +43,27 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
+// mongodb seession store for express-session
+const store = MongoStore.create({
+    mongoUrl:dbUrl,
+    crypto:{
+        secret:process.env.SECRET,
+    },
+    touchAfter:24*60*60,
+})
+
+
+store.on("error",()=>{
+    console.log("seession store error",err)
+})
+
+
+// sesssion configuration
 const sessionOptions={
-    secret:"mysupersecretCode",
+    store:store,
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
@@ -48,16 +73,14 @@ const sessionOptions={
     }
 }
 
-// Root Route
-app.get("/", (req, res) => {
-    res.render("home");  // Render the home.ejs page
-});
 
+// Middleware
 app.use(session(sessionOptions));
 app.use(flash())
 app.use(passport.initialize()) // Initialize passport middleware
 app.use(passport.session()) // Use passport session middleware
 passport.use(new LocalStrategy(User.authenticate())) // Use local strategy for authentication
+
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser()); 
