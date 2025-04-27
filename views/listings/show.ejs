@@ -31,8 +31,9 @@
     <form method="POST" action="/listings/<%= listing._id %>/reviews" class="needs-validation" novalidate>
       <!-- ✅ Hidden input for listingId (required by Joi schema) -->
      
-
+     
       <div class="mb-3 text-center">
+        <% if(currentUser) { %>
         <label class="form-label fs-5">Rating</label>
         <div class="star-rating d-flex justify-content-center flex-row-reverse gap-1">
           <input type="radio" name="review[rating]" value="5" id="star5">
@@ -53,6 +54,7 @@
       </div>
 
       <div class="mb-3">
+        <!-- <i class="fa fa-star"></i> is used to display a Font Awesome star icon in the rating system. -->
         <label for="comment" class="form-label fs-5">Comments</label>
         <textarea class="form-control" id="comment" name="review[comment]" rows="5" placeholder="Write your feedback..." required></textarea>
         <div class="invalid-feedback">Please add a comment before submitting your review.</div>
@@ -62,14 +64,14 @@
         <button type="submit" class="btn btn-primary px-4">Submit</button>
       </div>
     </form>
-
     <hr>
+    <% } %>
     <p><b>All Review</b></p>
     <div class="row d-flex flex-wrap justify-content-start gap-3 mt-4">
       <% for (let review of listing.reviews) { %>
         <div class="card col-md-5 col-sm-12 mb-5 d-flex flex-wrap justify-content-start gx-4 gy-4">
           <div class="card-body">
-            <h5 class="card-title">John</h5>
+            <h5 class="card-title">@<%=review.author.username %></h5>
             <h6 class="card-subtitle mb-2 text-muted">Rating: <%= review.rating %> ⭐</h6>
             <p class="card-text"><%= review.comment %></p>
             <% if (review.img) { %>
